@@ -60,7 +60,9 @@ async def entrypoint(ctx: agents.JobContext):
     session = AgentSession(
         preemptive_generation=True,
         turn_detection=silero.VAD.load(
-            min_silence_duration=0.5, # Reduced for faster response
+            min_silence_duration=0.6, # Increased to 0.6s to prevent cutting off mid-sentence (fixing double-reply)
+            prefix_padding_duration=0.2, 
+            min_speech_duration=0.1, 
         )
     )
     
