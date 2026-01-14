@@ -1,0 +1,12 @@
+.env
+.venv
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.DS_Store
+.vscode/
+control_log.txt
+conversations/
+venv_backup_20260105/
