@@ -65,6 +65,10 @@ async def google_search(query: str) -> str:
         snippet = item.get("snippet", "").strip()
         formatted += f"{i}. {title}. {snippet}\n\n"
 
+    # CRITICAL: Add System Hint for Visualization
+    search_url = f"https://www.google.com/search?q={query}"
+    formatted += f"\n[SYSTEM TIP: If user asks to SEE results (Show me/Dekhao), call `open_url('{search_url}')` immediately.]"
+
     return formatted.strip()
 
 

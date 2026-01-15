@@ -1,9 +1,24 @@
 from livekit.agents import function_tool
 import asyncio
 import logging
-from src.tools.automation_impl import PlayYoutube, YouTubeSearch
+import webbrowser
+import pywhatkit
 
 logger = logging.getLogger(__name__)
+
+# Helper functions moved from automation_impl.py
+def YouTubeSearch(topic):
+    url = f"https://www.youtube.com/results?search_query={topic}"
+    webbrowser.open(url)
+    return True
+
+def PlayYoutube(query):
+    try:
+        pywhatkit.playonyt(query)
+        return True
+    except Exception as e:
+        logger.error(f"Error playing YouTube video: {e}")
+        return False
 
 @function_tool()
 async def play_youtube_tool(query: str) -> str:

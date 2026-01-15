@@ -61,6 +61,15 @@ class SafeController:
     def is_active(self):
         return self.active
 
+    async def set_position(self, x: int, y: int):
+        if not self.is_active(): return "🛑 Controller is inactive."
+        try:
+            pyautogui.moveTo(x, y, duration=0.5)
+            self.log(f"Mouse moved to ({x}, {y})")
+            return f"🖱️ Mouse moved to ({x}, {y})."
+        except Exception as e:
+            return f"❌ Move failed: {e}"
+
     async def move_cursor(self, direction: str, distance: int = 100):
         if not self.is_active(): return "🛑 Controller is inactive."
         x, y = self.mouse.position
@@ -185,6 +194,18 @@ async def move_cursor_tool(direction: str, distance: int = 100):
         The controller is automatically activated before the action and deactivated afterward.
     """
     return await with_temporary_activation(controller.move_cursor, direction, distance)
+
+@function_tool()
+async def mouse_move_to_coords(x: int, y: int):
+    """
+    Moves the mouse cursor to absolute screen coordinates (X, Y).
+    Use this when you 'see' an element at a specific location and want to click it.
+    
+    Args:
+        x (int): Horizontal position (0 to Screen Width).
+        y (int): Vertical position (0 to Screen Height).
+    """
+    return await with_temporary_activation(controller.set_position, x, y)
 
 @function_tool()
 async def mouse_click_tool(button: str = "left"):
