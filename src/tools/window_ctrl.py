@@ -219,17 +219,17 @@ async def open_app(app_title: str, force_new: bool = False) -> str:
     try:
         # Step 1: Open Start Menu
         pyautogui.press('win')
-        await asyncio.sleep(0.5) # Wait for UI animation
+        await asyncio.sleep(0.3) # Snappy start
         
-        # Step 2: Type the app name slowly (Human-like)
+        # Step 2: Type the app name slowly (Human-like) - RESTORED
         pyautogui.write(search_term, interval=0.1) 
-        await asyncio.sleep(0.8) # Wait for search results
+        await asyncio.sleep(0.7) # Give Windows Search a moment
         
         # Step 3: Launch
         pyautogui.press('enter')
         
-        # Step 4: Fast Return (User requested speed)
-        await asyncio.sleep(0.5) 
+        # Step 4: Return
+        await asyncio.sleep(0.2) 
         return f"✅ Command sent: Opening '{search_term}'..."
             
     except Exception as e:
@@ -264,7 +264,19 @@ async def close_app(window_title: str) -> str:
 
     if search_term in ["code", "vs code", "vscode"]:
         search_term = "visual studio code"
-    elif search_term == "notepad":
+
+    # PRIORITY: Force Kill for UWP Apps (Settings, Calculator) 
+    # Standard .close() often fails for these.
+    if "setting" in search_term: 
+        logger.info("⚙️ Force closing Settings via TaskKill...")
+        os.system("taskkill /IM SystemSettings.exe /F")
+        return "✅ Settings closed (Force Kill)."
+
+    if "calculator" in search_term:
+        os.system("taskkill /IM CalculatorApp.exe /F")
+        return "✅ Calculator closed."
+
+    if search_term == "notepad":
          pass
 
     if not gw:
@@ -281,18 +293,9 @@ async def close_app(window_title: str) -> str:
     except Exception as e:
         logger.error(f"Error listing windows: {e}")
 
-    # Strategy 1.5: UWP / Special Apps Fallback (Blind Kill)
-    # If "Settings" or known UWP apps are requested but not found via title, kill process directly.
+    # Strategy 1.5: Fallback for not found windows
     if not target_window:
-        if "setting" in search_term: # Catch "Settings", "System Settings"
-            logger.info("⚙️ Attempting to close Settings via TaskKill...")
-            os.system("taskkill /IM SystemSettings.exe /F")
-            await asyncio.sleep(1)
-            return "✅ Settings closed (via Force Kill)."
-            
-        if "calculator" in search_term:
-             os.system("taskkill /IM CalculatorApp.exe /F")
-             return "✅ Calculator closed."
+        return f"⚠️ Could not find open window matching '{window_title}'."
 
     if target_window:
         original_title = target_window.title
@@ -303,11 +306,11 @@ async def close_app(window_title: str) -> str:
             if target_window.isMinimized:
                 target_window.restore()
             target_window.activate()
-            await asyncio.sleep(0.5)
+            await asyncio.sleep(0.2) # Fast Focus
             pyautogui.hotkey('alt', 'f4')
             
-            # VERIFICATION STEP (Crucial)
-            await asyncio.sleep(1.0) # Wait for close
+            # FAST VERIFICATION
+            await asyncio.sleep(0.2) # Quick wait
             
             # Check if it's actually gone using HWND (Handle) if available, else Title
             all_current_windows = gw.getAllWindows()
@@ -321,8 +324,8 @@ async def close_app(window_title: str) -> str:
             else:
                 # Retry: Direct Close
                 target_window.close()
-                await asyncio.sleep(0.5)
-                return f"⚠️ Force Closed '{original_title}'. Please check."
+                await asyncio.sleep(0.1)
+                return f"⚠️ Force Closed '{original_title}'."
 
         except Exception as e:
             return f"❌ Failed to close '{target_window.title}': {e}"

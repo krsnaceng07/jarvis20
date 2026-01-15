@@ -1,5 +1,6 @@
 import os
 import asyncio
+import logging
 from dotenv import load_dotenv
 from livekit import agents
 from livekit.agents import AgentSession, Agent, RoomInputOptions, ChatContext, ChatMessage
@@ -146,6 +147,11 @@ class APIKeyManager:
 
 class NativeAssistant(Agent):
     def __init__(self, chat_ctx, instructions, api_key=None) -> None:
+        # Suppress Noisy Logs
+        logging.getLogger("groq").setLevel(logging.WARNING)
+        logging.getLogger("httpcore").setLevel(logging.WARNING)
+        logging.getLogger("httpx").setLevel(logging.WARNING)
+
         model_name = os.getenv("GEMINI_MODEL", "gemini-2.5-flash-native-audio-preview-09-2025")
         
         # Initialize Realtime Model

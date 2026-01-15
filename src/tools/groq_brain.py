@@ -16,7 +16,8 @@ if GroqAPIKey:
 
 SYSTEM_PROMPT = """
 You are the "Cortex" (Logic Brain) of Jarvis.
-Your Goal: Translate vague, complex, or Nepali user requests into PRECISE Python Function Calls.
+Your Role: Handle **CATEGORY 2 (Realtime)** and **CATEGORY 3 (Automation)** queries.
+(Gemini handles simple chat, so your input is always Action-Oriented).
 
 **AVAILABLE TOOLS:**
 1. `google_search(query)`: For general info (E.g. "Who is PM of Nepal?").
