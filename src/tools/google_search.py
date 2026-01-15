@@ -40,9 +40,11 @@ async def google_search(query: str) -> str:
         "num": 3
     }
 
+    import asyncio
     try:
-        logger.info("Google Custom Search API को request भेजी जा रही है...")
-        response = requests.get(url, params=params, timeout=10)
+        logger.info("Google Custom Search API को request भेजी जा रही है... (Async)")
+        # Run blocking request in a separate thread to prevent Audio Stutter
+        response = await asyncio.to_thread(requests.get, url, params=params, timeout=10)
     except requests.exceptions.RequestException as e:
         logger.error(f"Request failed: {e}")
         return f"Google Search API request failed: {e}"

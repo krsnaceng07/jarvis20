@@ -10,7 +10,7 @@ from src.vision.screen_capture import ScreenCapture
 from livekit.agents import function_tool # Required for vision_tool
 
 # Import your custom modules
-from src.core.prompts import get_system_prompts
+from src.core.gemini_prompts import get_system_prompts
 from src.tools.google_search import google_search, get_current_datetime
 from src.tools.weather import get_weather
 from src.tools.window_ctrl import open_app, close_app, folder_file, minimize_window, maximize_window, list_open_windows, open_url
@@ -23,7 +23,7 @@ from src.tools.inputs import (
 from src.tools.content import generate_content_tool
 from src.tools.media import play_youtube_tool, search_youtube_tool
 from src.tools.system_ctrl import system_control_tool, get_battery_status
-from src.tools.groq_brain import ask_groq_planner
+from src.core.groq_brain import ask_groq_planner
 from src.memory.loop import MemoryExtractor
 
 load_dotenv()
