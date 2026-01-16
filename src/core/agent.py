@@ -152,7 +152,8 @@ class NativeAssistant(Agent):
         logging.getLogger("httpcore").setLevel(logging.WARNING)
         logging.getLogger("httpx").setLevel(logging.WARNING)
 
-        model_name = os.getenv("GEMINI_MODEL", "gemini-2.5-flash-native-audio-preview-09-2025")
+        model_name = os.getenv("GEMINI_MODEL", "models/gemini-2.0-flash-exp")
+        print(f"🤖 Connected to Gemini Model: {model_name}")
         
         # Initialize Realtime Model
         self.min_model = google.beta.realtime.RealtimeModel(

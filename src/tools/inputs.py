@@ -104,12 +104,13 @@ class SafeController:
     async def type_text(self, text: str):
         if not self.is_active(): return "🛑 Controller is inactive."
         for char in text:
-            if not char.isprintable():
+            # Allow common whitespace even if not 'printable' in strict sense
+            if not char.isprintable() and char not in ['\n', '\t', '\r']:
                 continue
             try:
                 self.keyboard.press(char)
                 self.keyboard.release(char)
-                await asyncio.sleep(0.05)
+                await asyncio.sleep(0.01) # Faster typing
             except Exception:
                 continue
         self.log(f"Typed text: {text}")
@@ -174,7 +175,7 @@ async def with_temporary_activation(fn, *args, **kwargs):
     # Using the magic token from the class
     controller.activate("my_secret_token")
     result = await fn(*args, **kwargs)
-    await asyncio.sleep(2)
+    await asyncio.sleep(0.1) # Reduced from 2s to 0.1s
     controller.deactivate()
     return result
 

@@ -15,6 +15,7 @@ from src.tools.google_search import google_search
 from src.tools.window_ctrl import open_app, close_app, minimize_window, maximize_window, open_url
 from src.tools.media import play_youtube_tool
 from src.tools.system_ctrl import system_control_tool
+from src.tools.inputs import type_text_tool  # Added for typing support
 
 load_dotenv()
 logger = logging.getLogger(__name__)
@@ -81,11 +82,12 @@ async def ask_groq_planner(query: str, context: str = ""):
             "maximize_window": maximize_window,
             "play_youtube_tool": play_youtube_tool,
             "open_url": open_url,
-            "system_control_tool": system_control_tool
+            "system_control_tool": system_control_tool,
+            "type_text": type_text_tool # Added this!
         }
         
-        # Strip potential markdown code blocks
-        clean_cmd = command_str.replace("```python", "").replace("```", "").strip()
+        # Strip potential markdown code blocks (triples and singles)
+        clean_cmd = command_str.replace("```python", "").replace("```", "").replace("`", "").strip()
         
         # Execute async function
         if "(" in clean_cmd and ")" in clean_cmd:
